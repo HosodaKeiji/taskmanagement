@@ -1,0 +1,31 @@
+# Python関連
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+*.sqlite3
+*.log
+
+# Djangoマイグレーションファイル
+*/migrations/*.pyc
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# VSCodeやIDE設定ファイル
+.vscode/
+*.swp
+
+# Node.js関連
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# Vue.jsのビルド成果物
+/dist/
+/public/build/
+
+# 環境変数ファイル（秘匿情報）
+.env
