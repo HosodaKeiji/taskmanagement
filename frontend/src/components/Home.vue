@@ -1,15 +1,19 @@
 <template>
   <div class="home">
     <h2 v-if="username">{{ username }}さんのタスク管理</h2>
-    <p v-else>ユーザー情報を取得中...</p>
+    <LoadingSpinner v-else />
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 
 export default {
   name: 'HomePage',
+  components: {
+    LoadingSpinner
+  },
   data() {
     return {
       username: null,
