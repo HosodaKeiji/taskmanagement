@@ -1,0 +1,6 @@
+# task_management/urls/__init__.py
+from django.urls import path, include
+
+urlpatterns = [
+    path("tasks/", include("task_management.urls.task"))
+]

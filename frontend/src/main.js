@@ -1,11 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import Signup from './components/Signup.vue'
-import Login from './components/Login.vue'
-import Home from "./components/Home.vue"
+import Signup from './views/Signup.vue'
+import Login from './views/Login.vue'
+import Home from "./views/Home.vue"
 import Daily from "./components/Daily.vue"
-import Weekly from "./components/Weekly.vue"
-import Monthly from "./components/Monthly.vue"
+import Weekly from "./views/Weekly.vue"
+import Monthly from "./views/Monthly.vue"
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
