@@ -1,20 +1,39 @@
 <template>
-  <router-view />
+  <div id="app">
+    <SidebarMenu :isClosed="isSidebarClosed" @toggle="toggleSidebar" />
+    <div :class="['main-content', { closed: isSidebarClosed }]">
+      <router-view />
+    </div>
+  </div>
 </template>
 
 <script>
+import SidebarMenu from './components/Sidebar.vue'
+
 export default {
-  name: 'App',
+  components: { SidebarMenu },
+  data() {
+    return {
+      isSidebarClosed: false
+    }
+  },
+  methods: {
+    toggleSidebar() {
+      this.isSidebarClosed = !this.isSidebarClosed
+    }
+  }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.main-content {
+  margin-left: 200px; /* サイドバー開いてるとき */
+  padding: 20px;
+  transition: margin-left 0.3s ease;
 }
+
+.main-content.closed {
+  margin-left: 80px; /* サイドバー閉じてるときは余白なし */
+}
+
 </style>
