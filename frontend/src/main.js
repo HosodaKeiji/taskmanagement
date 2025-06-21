@@ -3,7 +3,7 @@ import App from './App.vue'
 import Signup from './views/Signup.vue'
 import Login from './views/Login.vue'
 import Home from "./views/Home.vue"
-import Daily from "./components/Daily.vue"
+import Daily from "./views/Daily.vue"
 import Weekly from "./views/Weekly.vue"
 import Monthly from "./views/Monthly.vue"
 import { createRouter, createWebHistory } from 'vue-router'

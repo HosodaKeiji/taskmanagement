@@ -4,6 +4,7 @@
     <LoadingSpinner v-else />
     <button @click="showModal = true" class="create-btn">タスク作成</button>
     <TaskCreateModal v-if="showModal" @close="showModal = false" @success="onCreated" />
+    <TaskCalendar/>
   </div>
 </template>
 
@@ -11,12 +12,14 @@
 import axios from 'axios'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import TaskCreateModal from '@/components/TaskCreateModal.vue'
+import TaskCalendar from '@/components/TaskCalendar.vue'
 
 export default {
   name: 'HomePage',
   components: {
     LoadingSpinner,
-    TaskCreateModal
+    TaskCreateModal,
+    TaskCalendar
   },
   data() {
     return {
