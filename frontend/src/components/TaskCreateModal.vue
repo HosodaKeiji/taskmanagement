@@ -126,6 +126,7 @@ export default {
         alert('タスクを作成しました')
         this.$emit('success')
         this.$emit('close')
+        location.reload() // ← ページをリロードする
       } catch (e) {
         alert('作成に失敗しました')
         if (e.response && e.response.data) {

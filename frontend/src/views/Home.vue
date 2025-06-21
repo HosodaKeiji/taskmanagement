@@ -1,8 +1,10 @@
 <template>
   <div class="home">
-    <h2 v-if="username">{{ username }}さんのタスク管理</h2>
+    <h2 v-if="username" class="title">{{ username }}さんのタスク管理</h2>
     <LoadingSpinner v-else />
-    <button @click="showModal = true" class="create-btn">タスク作成</button>
+    <div class="button-container">
+      <button @click="showModal = true" class="create-btn">タスク作成</button>
+    </div>
     <TaskCreateModal v-if="showModal" @close="showModal = false" @success="onCreated" />
     <TaskCalendar/>
   </div>
@@ -56,13 +58,24 @@ export default {
 
 <style scoped>
 .home {
-  margin-top: 40px;
+  margin-top: 10px;
   font-size: 1.5rem;
-  color: #a77bc2; /* メインカラーに合わせた装飾 */
+  color: #a77bc2;
+  text-align: center;
 }
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #a77bc2;
+}
+
+.button-container {
+  margin-bottom: 15px;
+}
+
 .create-btn {
-  margin-top: 20px;
-  padding: 10px 15px;
+  padding: 8px 16px;
   font-size: 1rem;
   background-color: #a77bc2;
   color: white;
