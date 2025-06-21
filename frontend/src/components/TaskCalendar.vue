@@ -1,4 +1,3 @@
-
 <template>
   <div class="calendar-container">
     <div class="calendar-header">
@@ -8,16 +7,8 @@
     </div>
     <div class="calendar-grid">
       <div class="calendar-day" v-for="day in weekDays" :key="day">{{ day }}</div>
-      <div
-        v-for="blank in startDay"
-        :key="'blank-' + blank"
-        class="calendar-cell empty"
-      ></div>
-      <div
-        v-for="date in daysInMonth"
-        :key="date"
-        class="calendar-cell"
-      >
+      <div v-for="blank in startDay" :key="'blank-' + blank" class="calendar-cell empty"></div>
+      <div v-for="date in daysInMonth" :key="date" class="calendar-cell">
         <div class="date-number">{{ date }}</div>
         <ul class="task-list">
           <li
@@ -31,6 +22,17 @@
         </ul>
       </div>
     </div>
+
+    <div v-if="selectedTask" class="modal-overlay" @click.self="closeModal">
+      <div class="modal">
+        <h3>{{ selectedTask.name }}</h3>
+        <p><strong>優先度:</strong> {{ priorityLabel(selectedTask.priority) }}</p>
+        <p><strong>ステータス:</strong> {{ statusLabel(selectedTask.status) }}</p>
+        <p><strong>説明:</strong> {{ selectedTask.description || '説明なし' }}</p>
+        <button @click="editTask">編集</button>
+        <button @click="closeModal">閉じる</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,19 +42,14 @@ import axios from 'axios'
 
 const now = new Date()
 const year = ref(now.getFullYear())
-const month = ref(now.getMonth() + 1) // 1-12
-
+const month = ref(now.getMonth() + 1)
 const tasks = ref([])
+const selectedTask = ref(null)
 
 const weekDays = ['日', '月', '火', '水', '木', '金', '土']
 
-const daysInMonth = computed(() => {
-  return new Date(year.value, month.value, 0).getDate()
-})
-
-const startDay = computed(() => {
-  return new Date(year.value, month.value - 1, 1).getDay()
-})
+const daysInMonth = computed(() => new Date(year.value, month.value, 0).getDate())
+const startDay = computed(() => new Date(year.value, month.value - 1, 1).getDay())
 
 function formatDate(y, m, d) {
   return `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`
@@ -72,15 +69,15 @@ async function fetchTasks() {
   const token = localStorage.getItem('access_token')
   if (!token) return
   try {
-    const res = await axios.get(
-      `http://localhost:8000/task_management/tasks/task_lists/`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
+    const res = await axios.get('http://localhost:8000/task_management/tasks/task_lists/', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     tasks.value = res.data
   } catch (e) {
     console.error('タスク取得エラー', e)
   }
 }
+console.log(tasks);
 
 function prevMonth() {
   if (month.value === 1) {
@@ -103,14 +100,31 @@ function nextMonth() {
 }
 
 function openTask(task) {
-  alert(`[タスク詳細]
-名前: ${task.name}
-期限: ${task.deadline}`)
+  selectedTask.value = task
+}
+
+function closeModal() {
+  selectedTask.value = null
+}
+
+function editTask() {
+  // 後で実装予定: 編集モーダルや遷移
+  alert(`編集画面（仮）: ${selectedTask.value.name}`)
+}
+
+function priorityLabel(val) {
+  return { high: '高', medium: '中', low: '低' }[val] || val
+}
+function statusLabel(val) {
+  return {
+    not_started: '未着手',
+    in_progress: '進行中',
+    completed: '完了'
+  }[val] || val
 }
 
 onMounted(fetchTasks)
 </script>
-
 
 <style scoped>
 .calendar-container {
@@ -160,5 +174,35 @@ onMounted(fetchTasks)
 .empty {
   background: transparent;
   border: none;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+.modal button {
+  margin-top: 10px;
+  margin-right: 10px;
+  background-color: #a77bc2;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 </style>

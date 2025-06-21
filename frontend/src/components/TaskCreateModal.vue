@@ -3,6 +3,7 @@
     <div class="modal">
       <h3>タスクを作成</h3>
       <form @submit.prevent="createTask">
+        <!-- 基本情報 -->
         <div class="form-group">
           <label for="name">タスク名</label>
           <input id="name" v-model="form.name" required />
@@ -18,7 +19,26 @@
           </select>
         </div>
 
-        <div class="form-group">
+        <div v-if="form.type === 'weekly'" class="form-group">
+          <label for="repeat_day">繰り返し曜日</label>
+          <select id="repeat_day" v-model="form.repeat_rule.day">
+            <option disabled value="">選択してください</option>
+            <option value="monday">月</option>
+            <option value="tuesday">火</option>
+            <option value="wednesday">水</option>
+            <option value="thursday">木</option>
+            <option value="friday">金</option>
+            <option value="saturday">土</option>
+            <option value="sunday">日</option>
+          </select>
+        </div>
+
+        <div v-if="form.type === 'monthly'" class="form-group">
+          <label for="repeat_day">繰り返し日（1〜31日）</label>
+          <input type="number" min="1" max="31" v-model.number="form.repeat_rule.day" />
+        </div>
+
+        <div class="form-group" v-if="form.type === 'normal'">
           <label for="deadline">締切日</label>
           <input id="deadline" type="date" v-model="form.deadline" required />
         </div>
@@ -68,6 +88,20 @@ export default {
         priority: 'medium',
         status: 'not_started',
         description: '',
+        repeat_rule: { frequency: '', day: '' }
+      }
+    }
+  },
+  watch: {
+    'form.type'(newType) {
+      if (newType === 'weekly') {
+        this.form.repeat_rule = { frequency: 'weekly', day: '' }
+      } else if (newType === 'monthly') {
+        this.form.repeat_rule = { frequency: 'monthly', day: '' }
+      } else if (newType === 'daily') {
+        this.form.repeat_rule = { frequency: 'daily' }
+      } else {
+        this.form.repeat_rule = null
       }
     }
   },
@@ -75,7 +109,16 @@ export default {
     async createTask() {
       const token = localStorage.getItem('access_token')
       try {
-        await axios.post('http://localhost:8000/task_management/tasks/task_create/', this.form, {
+        const payload = {
+          name: this.form.name,
+          type: this.form.type,
+          deadline: this.form.type === 'normal' ? this.form.deadline : null,
+          priority: this.form.priority,
+          status: this.form.status,
+          description: this.form.description,
+          repeat_rule: this.form.repeat_rule || null,
+        }
+        await axios.post('http://localhost:8000/task_management/tasks/task_create/', payload, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -85,7 +128,11 @@ export default {
         this.$emit('close')
       } catch (e) {
         alert('作成に失敗しました')
-        console.error(e)
+        if (e.response && e.response.data) {
+          console.error('サーバーエラー:', e.response.data);
+        } else {
+          console.error(e);
+        }
       }
     }
   }
