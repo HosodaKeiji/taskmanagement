@@ -161,7 +161,7 @@ export default {
 
 h3 {
   margin-bottom: 16px;
-  color: #333;
+  color: #a77bc2;
   text-align: center;
 }
 

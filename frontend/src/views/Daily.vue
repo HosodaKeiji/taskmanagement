@@ -74,11 +74,11 @@ export default {
     async fetchTasks() {
       const token = localStorage.getItem('access_token')
       try {
-        const res = await axios.get('http://localhost:8000/task_management/tasks/task_lists/', {
+        const res = await axios.get('http://localhost:8000/task_management/daily/daily_task_lists/', {
           headers: { Authorization: `Bearer ${token}` }
         })
         // 日次タスクだけ抽出
-        let dailyTasks = res.data.filter(task => task.type === 'daily')
+        const dailyTasks = res.data
 
         // 優先度でソート（high > medium > low）
         const priorityOrder = { high: 0, medium: 1, low: 2 }

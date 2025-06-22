@@ -18,15 +18,6 @@
         </div>
 
         <div class="form-group">
-          <label for="status">ステータス</label>
-          <select id="status" v-model="form.status">
-            <option value="not_started">未着手</option>
-            <option value="in_progress">進行中</option>
-            <option value="completed">完了</option>
-          </select>
-        </div>
-
-        <div class="form-group">
           <label for="description">説明</label>
           <textarea id="description" v-model="form.description" rows="3"></textarea>
         </div>
