@@ -1,10 +1,10 @@
 <template>
   <div class="home">
-    <h2 v-if="username" class="title">{{ username }}さんのタスク管理</h2>
-    <LoadingSpinner v-else />
-    <div class="button-container">
+    <div class="header" v-if="username">
+      <h2 class="title">{{ username }}さんのタスク管理</h2>
       <button @click="showModal = true" class="create-btn">タスク作成</button>
     </div>
+    <LoadingSpinner v-else />
     <TaskCreateModal v-if="showModal" @close="showModal = false" @success="onCreated" />
     <TaskCalendar/>
   </div>
@@ -61,17 +61,17 @@ export default {
   margin-top: 10px;
   font-size: 1.5rem;
   color: #a77bc2;
-  text-align: center;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .title {
   font-size: 2rem;
-  margin-bottom: 10px;
   color: #a77bc2;
-}
-
-.button-container {
-  margin-bottom: 15px;
 }
 
 .create-btn {

@@ -293,7 +293,7 @@ const nextStatusLabel = computed(() => {
 
 <style scoped>
 .calendar-container {
-  max-width: 800px;
+  max-width: 80%;
   margin: auto;
 }
 

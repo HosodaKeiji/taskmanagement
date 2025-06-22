@@ -141,3 +141,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),  # 今はデフォルト5分くらいなので1時間に延長
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7), # 必要に応じて変更
+    # 他の設定はそのまま
+}
