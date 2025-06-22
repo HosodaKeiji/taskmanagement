@@ -1,25 +1,30 @@
+<!-- components/WeeklyEditModal.vue -->
 <template>
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal">
-      <h3>日次タスクを作成</h3>
-      <form @submit.prevent="createTask">
+      <h3>週次タスクを編集</h3>
+      <form @submit.prevent="updateTask">
         <div class="form-group">
-          <label>タスク名</label>
-          <input v-model="form.name" required />
+          <label for="name">タスク名</label>
+          <input id="name" v-model="form.name" required />
+        </div>
 
-          <label>優先度</label>
-          <select v-model="form.priority">
+        <div class="form-group">
+          <label for="priority">優先度</label>
+          <select id="priority" v-model="form.priority">
             <option value="high">高</option>
             <option value="medium">中</option>
             <option value="low">低</option>
           </select>
+        </div>
 
-          <label>説明</label>
-          <textarea v-model="form.description" rows="3" />
+        <div class="form-group">
+          <label for="description">説明</label>
+          <textarea id="description" v-model="form.description" rows="3"></textarea>
         </div>
 
         <div class="buttons">
-          <button type="submit" class="submit-btn">作成</button>
+          <button type="submit" class="submit-btn">保存</button>
           <button type="button" class="cancel-btn" @click="$emit('close')">閉じる</button>
         </div>
       </form>
@@ -31,33 +36,31 @@
 import axios from 'axios'
 
 export default {
-  name: 'DailyCreateModal',
+  name: 'WeeklyEditModal',
+  props: {
+    task: Object
+  },
   data() {
     return {
-      form: {
-        name: '',
-        priority: 'medium',
-        description: '',
-        type: 'daily',
-        repeat_rule: { frequency: 'daily' }
-      }
+      form: { ...this.task }
     }
   },
   methods: {
-    async createTask() {
+    async updateTask() {
       const token = localStorage.getItem('access_token')
       try {
-        await axios.post('http://localhost:8000/task_management/daily/daily_task/', this.form, {
+        await axios.put(`http://localhost:8000/task_management/weekly/weekly_task/${this.form.id}/`, this.form, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
-        alert('日次タスクを作成しました')
-        this.$emit('created')
+        alert('タスクを更新しました')
+        this.$emit('updated')
         this.$emit('close')
+        location.reload() // ← ページをリロードする
       } catch (e) {
-        console.error('作成エラー:', e)
-        alert('作成に失敗しました')
+        console.error('更新エラー:', e)
+        alert('更新に失敗しました')
       }
     }
   }
@@ -67,26 +70,23 @@ export default {
 <style scoped>
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal {
-  background: #fff;
+  background: white;
   padding: 24px;
   border-radius: 12px;
-  width: 340px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-h3 {
-  margin-bottom: 16px;
-  color: #a77bc2;
-  text-align: center;
+  width: 350px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .form-group {
@@ -101,7 +101,9 @@ label {
   color: #555;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
