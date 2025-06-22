@@ -1,0 +1,86 @@
+<template>
+  <div class="home">
+    <h2 v-if="username" class="title">{{ username }}さんのタスク管理</h2>
+    <LoadingSpinner v-else />
+    <div class="button-container">
+      <button @click="showModal = true" class="create-btn">タスク作成</button>
+    </div>
+    <TaskCreateModal v-if="showModal" @close="showModal = false" @success="onCreated" />
+    <TaskCalendar/>
+  </div>
+</template>
+
+<script>
+import axios from 'axios'
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import TaskCreateModal from '@/components/TaskCreateModal.vue'
+import TaskCalendar from '@/components/TaskCalendar.vue'
+
+export default {
+  name: 'HomePage',
+  components: {
+    LoadingSpinner,
+    TaskCreateModal,
+    TaskCalendar
+  },
+  data() {
+    return {
+      username: null,
+      showModal: false
+    }
+  },
+  async created() {
+    const token = localStorage.getItem('access_token')
+    if (token) {
+      try {
+        const response = await axios.get('http://localhost:8000/accounts/user/', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        this.username = response.data.username
+        console.log(response.data)
+      } catch (e) {
+        console.error('ユーザー取得エラー:', e)
+        this.username = 'ゲスト'
+      }
+    } else {
+      this.username = 'ゲスト'
+    }
+  },
+  methods: {
+    onCreated() {
+      alert("タスクが作成されました")
+    }
+  }
+}
+</script>
+
+<style scoped>
+.home {
+  margin-top: 10px;
+  font-size: 1.5rem;
+  color: #a77bc2;
+  text-align: center;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #a77bc2;
+}
+
+.button-container {
+  margin-bottom: 15px;
+}
+
+.create-btn {
+  padding: 8px 16px;
+  font-size: 1rem;
+  background-color: #a77bc2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+</style>
