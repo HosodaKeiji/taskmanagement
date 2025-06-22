@@ -1,7 +1,7 @@
 <template>
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal">
-      <h3>週次タスク作成</h3>
+      <h3>月次タスク作成</h3>
       <form @submit.prevent="createTask">
         <label>名前</label>
         <input v-model="task.name" required />
@@ -16,15 +16,9 @@
         <label>説明</label>
         <textarea v-model="task.description" rows="3" />
 
-        <label>曜日</label>
+        <label>繰り返し日（毎月）</label>
         <select v-model="task.repeat_rule.day" required>
-          <option value="monday">月曜日</option>
-          <option value="tuesday">火曜日</option>
-          <option value="wednesday">水曜日</option>
-          <option value="thursday">木曜日</option>
-          <option value="friday">金曜日</option>
-          <option value="saturday">土曜日</option>
-          <option value="sunday">日曜日</option>
+          <option v-for="n in 31" :key="n" :value="n">{{ n }}日</option>
         </select>
 
         <div class="modal-actions">
@@ -40,55 +34,41 @@
 import axios from 'axios'
 
 export default {
-    name: 'WeeklyCreateModal',
-    data() {
-        return {
-        task: {
-            name: '',
-            priority: 'medium',
-            description: '',
-            type: 'weekly',
-            repeat_rule: {
-            frequency: 'weekly',
-            day: 'monday'
-            }
-        },
-        error: null
+  name: 'MonthlyCreateModal',
+  data() {
+    return {
+      task: {
+        name: '',
+        priority: 'medium',
+        description: '',
+        type: 'monthly',
+        repeat_rule: {
+          frequency: 'monthly',
+          day: 1
         }
-    },
-    methods: {
-        async createTask() {
-        try {
-            const token = localStorage.getItem('access_token')
-            const payload = {
-            ...this.task,
-            repeat_rule: {
-                frequency: 'weekly',
-                day: this.task.repeat_rule.day  // ← ここを day にする（days にしない）
-            }
-            }
-            await axios.post('http://localhost:8000/task_management/weekly/weekly_task/', payload, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            })
-            alert('週次タスクを作成しました')
-            this.$emit('created')
-            this.$emit('close')
-        } catch (e) {
-            if (e.response && e.response.data) {
-            console.error('作成エラー詳細:', e.response.data)
-            alert('作成に失敗しました: ' + JSON.stringify(e.response.data))
-            } else {
-            console.error('作成エラー:', e)
-            alert('作成に失敗しました')
-            }
-        }
-        }
+      }
     }
+  },
+  methods: {
+    async createTask() {
+      try {
+        const token = localStorage.getItem('access_token')
+        await axios.post('http://localhost:8000/task_management/monthly/monthly_task/', this.task, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        alert('月次タスクを作成しました')
+        this.$emit('created')
+        this.$emit('close')
+      } catch (e) {
+        console.error('作成エラー:', e)
+        alert('作成に失敗しました')
+      }
+    }
+  }
 }
 </script>
-
 
 <style scoped>
 .modal-overlay {
@@ -173,12 +153,5 @@ textarea {
 
 .cancel-btn:hover {
   background-color: #999;
-}
-
-.error {
-  color: red;
-  margin-top: 12px;
-  text-align: center;
-  font-weight: bold;
 }
 </style>
