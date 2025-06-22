@@ -79,7 +79,7 @@
         <div class="modal-buttons">
           <template v-if="isEditing">
             <button class="submit-btn" @click="saveTaskEdits">保存</button>
-            <button class="cancel-btn" @click="isEditing = false">キャンセル</button>
+            <button class="cancel-btn" @click="isEditing = false">閉じる</button>
           </template>
           <template v-else>
             <button @click="advanceStatus" class="status-btn">
