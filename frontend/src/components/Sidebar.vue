@@ -1,17 +1,16 @@
 <template>
     <div :class="['sidebar', { closed: isClosed }]">
         <div class="header">
-        <h2 class="title">Task <br>Management</h2>
-        <button class="toggle-btn" @click="toggleSidebar" aria-label="Toggle Sidebar">
-            &#9776;
-        </button>
+        <h2 class="title">Task <br />Management</h2>
+        <button class="toggle-btn" @click="toggleSidebar" aria-label="Toggle Sidebar">&#9776;</button>
         </div>
         <ul>
-            <li><router-link to="/home">ホーム</router-link></li>
-            <li><router-link to="/daily">日次</router-link></li>
-            <li><router-link to="/weekly">週次</router-link></li>
-            <li><router-link to="/monthly">月次</router-link></li>
+        <li><router-link to="/home">ホーム</router-link></li>
+        <li><router-link to="/daily">日次</router-link></li>
+        <li><router-link to="/weekly">週次</router-link></li>
+        <li><router-link to="/monthly">月次</router-link></li>
         </ul>
+        <button class="logout-btn" @click="logout">ログアウト</button>
     </div>
 </template>
 
@@ -23,10 +22,15 @@ export default {
     methods: {
         toggleSidebar() {
         this.$emit('toggle')
+        },
+        logout() {
+        localStorage.removeItem('access_token')
+        this.$router.push('/login')
         }
     }
 }
 </script>
+
 
 <style scoped>
 .sidebar {
@@ -123,4 +127,24 @@ a.router-link-active {
     background-color: #e6d2f3;
     color: #a77bc2;
 }
+
+.logout-btn {
+    background-color: transparent;
+    color: white;
+    border: none;
+    text-align: left;
+    padding: 10px 15px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    margin-top: auto; /* 下に固定 */
+    font-size: 1rem;
+}
+
+.logout-btn:hover {
+    background-color: #e6d2f3;
+    color: #a77bc2;
+}
+
 </style>
