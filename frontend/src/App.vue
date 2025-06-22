@@ -1,11 +1,17 @@
 <template>
   <div id="app">
-    <SidebarMenu :isClosed="isSidebarClosed" @toggle="toggleSidebar" />
-    <div :class="['main-content', { closed: isSidebarClosed }]">
+    <!-- ログイン・サインアップページではサイドバーを非表示 -->
+    <SidebarMenu
+      v-if="!hideSidebar"
+      :isClosed="isSidebarClosed"
+      @toggle="toggleSidebar"
+    />
+    <div :class="['main-content', { closed: isSidebarClosed && !hideSidebar }]">
       <router-view />
     </div>
   </div>
 </template>
+
 
 <script>
 import SidebarMenu from './components/Sidebar.vue'
@@ -15,6 +21,12 @@ export default {
   data() {
     return {
       isSidebarClosed: false
+    }
+  },
+  computed: {
+    hideSidebar() {
+      const path = this.$route.path
+      return path === '/login' || path === '/signup'
     }
   },
   methods: {
