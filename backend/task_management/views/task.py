@@ -20,3 +20,10 @@ class TaskRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)
+
+class TaskDestroyAPIView(generics.DestroyAPIView):
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
