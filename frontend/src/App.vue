@@ -6,7 +6,10 @@
       :isClosed="isSidebarClosed"
       @toggle="toggleSidebar"
     />
-    <div :class="['main-content', { closed: isSidebarClosed && !hideSidebar }]">
+    <div :class="['main-content', {
+      closed: isSidebarClosed && !hideSidebar,
+      'no-sidebar': hideSidebar
+    }]">
       <router-view />
     </div>
   </div>
@@ -46,6 +49,10 @@ export default {
 
 .main-content.closed {
   margin-left: 80px; /* サイドバー閉じてるときは余白なし */
+}
+
+.main-content.no-sidebar {
+  margin-left: 0;
 }
 
 </style>
