@@ -37,7 +37,9 @@
             {{ selectedTask.name }}
           </template>
         </h3>
-
+        <button class="delete-icon" @click="deleteTask" title="削除">
+          🗑️
+        </button>
         <p>
           <strong>優先度:</strong>
           <template v-if="isEditing">
@@ -289,6 +291,24 @@ const nextStatusLabel = computed(() => {
   }
 })
 
+function deleteTask() {
+  if (!selectedTask.value) return
+  if (!confirm('このタスクを削除してもよろしいですか？')) return
+
+  const token = localStorage.getItem('access_token')
+  axios.delete(`http://localhost:8000/task_management/tasks/task/${selectedTask.value.id}/delete/`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(() => {
+    alert('削除しました')
+    fetchTasks()
+    closeModal()
+  })
+  .catch(err => {
+    console.error('削除失敗:', err)
+    alert('削除に失敗しました')
+  })
+}
 </script>
 
 <style scoped>
@@ -366,8 +386,9 @@ const nextStatusLabel = computed(() => {
   min-width: 300px;
   max-width: 400px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
-.modal button {
+.modal button:not(.delete-icon) {
   margin-top: 10px;
   margin-right: 10px;
   background-color: #a77bc2;
@@ -431,6 +452,30 @@ const nextStatusLabel = computed(() => {
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: transparent; /* ← 背景透明に */
+  border: none; /* ← 枠線を消す */
+  outline: none; /* ← フォーカス時の枠も消す */
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  padding: 0; /* ← デフォルト余白を消す */
+  line-height: 1; /* ← アイコンの行間を詰める */
+}
+
+.delete-icon:hover {
+  color: #e74c3c; /* 赤くなる */
 }
 
 </style>

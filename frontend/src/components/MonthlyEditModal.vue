@@ -2,6 +2,7 @@
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal">
       <h3>月次タスク編集</h3>
+      <button class="delete-icon" @click="deleteTask" title="削除">🗑️</button>
       <form @submit.prevent="updateTask">
         <label>名前</label>
         <input v-model="editedTask.name" required />
@@ -22,7 +23,7 @@
         </select>
 
         <div class="modal-actions">
-          <button type="submit" class="submit-btn">更新</button>
+          <button type="submit" class="submit-btn">保存</button>
           <button type="button" class="cancel-btn" @click="$emit('close')">閉じる</button>
         </div>
       </form>
@@ -57,6 +58,26 @@ export default {
         console.error('更新エラー:', e)
         alert('更新に失敗しました')
       }
+    },
+
+    async deleteTask() {
+      if (!confirm('このタスクを削除してもよろしいですか？')) return
+
+      const token = localStorage.getItem('access_token')
+      try {
+        const url = `http://localhost:8000/task_management/tasks/task/${this.editedTask.id}/delete/`
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+
+        alert('削除しました')
+        this.$emit('deleted')
+        this.$emit('close')
+        location.reload()
+      } catch (err) {
+        console.error('削除失敗:', err)
+        alert('削除に失敗しました')
+      }
     }
   }
 }
@@ -82,6 +103,7 @@ export default {
   border-radius: 12px;
   width: 340px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .modal h3 {
@@ -145,5 +167,22 @@ textarea {
 
 .cancel-btn:hover {
   background-color: #999;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: transparent;
+  border: none;
+  color: #888;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.delete-icon:hover {
+  color: #e74c3c;
 }
 </style>
